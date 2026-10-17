@@ -1,35 +1,331 @@
 /** DOM presentation and input adapters; no movement or tile rules. */
-export class UI{
- constructor(){this.done=new Set();this.unlocked=new URLSearchParams(location.search).get('unlock')==='all';try{this.done=new Set(JSON.parse(localStorage.getItem('bloxorz.completed')||'[]'));this.unlocked ||=localStorage.getItem('bloxorz.unlocked')==='yes';}catch{}this.sound=false;}
- bind(game){this.game=game;document.querySelector('#stage').append(document.querySelector('#dpad'));
-  document.querySelector('#restart').onclick=()=>game.restart();document.querySelector('#undo').onclick=()=>game.undo();document.querySelector('#swap').onclick=()=>game.input('SWAP');
-  document.querySelector('#new-game').onclick=()=>{if(!game.moves||confirm('Start again at level 1?'))game.load(1);};
-  document.querySelector('#levels').onclick=()=>this.showLevels();document.querySelector('#help').onclick=()=>document.querySelector('#legend-dialog').showModal();
-  document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.close).close());
-  document.querySelector('#unlock').onclick=()=>{this.unlocked=true;try{localStorage.setItem('bloxorz.unlocked','yes');}catch{}this.showLevels();};
-  document.querySelectorAll('[data-solve]').forEach(b=>b.onclick=()=>game.solve(b.dataset.solve,document.querySelector('#heuristic').value));
-  document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>game.input(b.dataset.action));
-  document.querySelector('#sound').onclick=()=>{this.sound=!this.sound;document.querySelector('#sound').textContent=this.sound?'Sound on':'Sound off';document.querySelector('#sound').setAttribute('aria-pressed',String(this.sound));if(this.sound)this.beep();};
-  document.querySelector('#begin').onclick=()=>{document.querySelector('#welcome').close();try{localStorage.setItem('bloxorz.seen','yes');}catch{}};
-  document.querySelector('#play-pause').onclick=()=>game.pauseReplay();document.querySelector('#replay-step').onclick=()=>game.stepReplay();document.querySelector('#stop').onclick=()=>game.stopReplay();document.querySelector('#speed').onchange=e=>{game.queue.speed=Number(e.target.value);};
-  const keymap={ArrowUp:'UP',ArrowDown:'DOWN',ArrowLeft:'LEFT',ArrowRight:'RIGHT',w:'UP',s:'DOWN',a:'LEFT',d:'RIGHT',' ':'SWAP'};
-  window.addEventListener('keydown',e=>{if(e.target instanceof Element && e.target.matches('input,select,textarea'))return;if(document.querySelector('dialog[open]'))return;const key=e.key.length===1?e.key.toLowerCase():e.key;if(keymap[key]||['Backspace','r','u'].includes(key))e.preventDefault();if(e.repeat)return;if(keymap[key])game.input(keymap[key]);else if(key==='r')game.restart();else if(key==='u'||key==='Backspace')game.undo();else if(key==='Escape')this.showLevels();});
-  let touch=null;const canvas=game.scene.renderer.domElement;canvas.addEventListener('pointerdown',e=>{touch=[e.clientX,e.clientY];});canvas.addEventListener('pointerup',e=>{if(!touch)return;const dx=e.clientX-touch[0],dy=e.clientY-touch[1];touch=null;if(Math.max(Math.abs(dx),Math.abs(dy))<25)return;game.input(Math.abs(dx)>Math.abs(dy)?dx>0?'RIGHT':'LEFT':dy>0?'DOWN':'UP');});
- }
- catalog(levels,boards){this.levels=levels;this.boards=boards;}
- showLevels(){const grid=document.querySelector('#level-grid');grid.replaceChildren();for(const level of this.levels){const unlocked=this.unlocked||level.id===1||this.done.has(level.id-1)||this.done.has(level.id);const b=document.createElement('button');b.className='level-card'+(this.done.has(level.id)?' completed':'');b.disabled=!unlocked;
-  const board=this.boards.get(level.id);const colors={floor:'#53677c',start:'#e9b363',goal:'#65dcd0',fragile:'#c38549',bridge:'#328f9e',soft_switch:'#368c80',heavy_switch:'#8e70b7',split_switch:'#527fb4'};
-  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox',`0 0 ${board.grid[0].length*5} ${board.grid.length*5}`);svg.setAttribute('aria-hidden','true');board.grid.forEach((row,r)=>[...row].forEach((ch,c)=>{const kind=board.legend[ch];if(kind==='void')return;const rect=document.createElementNS(svg.namespaceURI,'rect');for(const[k,v]of Object.entries({x:c*5,y:r*5,width:4,height:4,rx:.6,fill:colors[kind]}))rect.setAttribute(k,v);svg.append(rect);}));b.append(svg);
-  const title=document.createElement('b');title.textContent=`${String(level.id).padStart(2,'0')} · ${level.name}`;const detail=document.createElement('small');detail.textContent=!unlocked?'Locked':this.done.has(level.id)?'✓ Completed':'●'.repeat(level.difficulty)+'○'.repeat(5-level.difficulty);b.append(title,detail);b.onclick=()=>{document.querySelector('#level-dialog').close();this.game.load(level.id);};grid.append(b);
- }const dialog=document.querySelector('#level-dialog');if(!dialog.open)dialog.showModal();}
- showWelcome(){let seen=false;try{seen=localStorage.getItem('bloxorz.seen')==='yes';}catch{}if(!seen&&!this.game.debug)document.querySelector('#welcome').showModal();}
- level(level){document.querySelector('#level-number').textContent=`${String(level.id).padStart(2,'0')} / 15`;document.querySelector('#level-name').textContent=level.name;document.querySelector('#level-hint').textContent=level.meta.hint;const difficulty=level.meta.difficulty;document.querySelector('#difficulty').textContent='●'.repeat(difficulty)+'○'.repeat(5-difficulty);document.querySelector('#metrics').hidden=true;}
- update(){const g=this.game;document.querySelector('#moves').textContent=String(g.moves||0).padStart(2,'0');document.querySelector('#status').textContent=g.mode==='IDLE'?'YOUR MOVE':g.mode.replaceAll('_',' ');document.querySelectorAll('[data-solve]').forEach(b=>b.disabled=g.mode!=='IDLE'||g.status!=='PLAYING');document.querySelector('#undo').disabled=!['IDLE','ANIMATING','WIN_FX','LOSE_FX'].includes(g.mode)||!g.moves;document.querySelector('#swap').disabled=g.mode!=='IDLE'||!g.state?.split;document.querySelector('#guidance').textContent=g.mode==='REPLAY'?'Playback active — manual input is locked.':g.state?.split?'The glowing marker identifies your active cube. Space to switch.':'Tip: stand upright on the glowing goal to finish.';}
- complete(id){this.done.add(id);try{localStorage.setItem('bloxorz.completed',JSON.stringify([...this.done]));}catch{}}
- toast(text){const el=document.querySelector('#toast');el.textContent=text;el.classList.add('visible');clearTimeout(this.toastTimer);this.toastTimer=setTimeout(()=>el.classList.remove('visible'),4000);}
- metrics(result,algo,heuristic){const el=document.querySelector('#metrics');el.hidden=false;el.replaceChildren();const heading=document.createElement('b');heading.textContent=`${algo.toUpperCase()}${algo==='astar'?' · '+heuristic:''}`;el.append(heading);if(!result.found){const p=document.createElement('p');p.className='muted';p.textContent=result.reason==='not_implemented'?'Solver này chưa được cài đặt. Add your implementation in solvers/.':result.reason==='timeout'?'Không giải được trong thời gian cho phép.':result.reason||'No solution found.';el.append(p);return;}
-  const grid=document.createElement('div');grid.className='metric-grid';for(const [label,value]of [['Search time',result.search_time.toFixed(4)+' s'],['Peak memory',result.measurement_reason?'unavailable':result.peak_memory_kb.toFixed(1)+' KB'],['Expanded nodes',result.expanded_nodes],['Solution length',result.solution_length],['Cost',result.cost]]){const box=document.createElement('div'),small=document.createElement('small'),strong=document.createElement('strong');small.textContent=label;strong.textContent=value;box.append(small,strong);grid.append(box);}el.append(grid);
- }
- replay(path,index,paused){document.querySelector('#replay').hidden=false;document.querySelector('#play-pause').textContent=paused?'Play':'Pause';const progress=document.querySelector('#progress');progress.max=Math.max(1,path.length);progress.value=index;const list=document.querySelector('#path');list.replaceChildren();path.forEach((action,i)=>{const item=document.createElement('span');item.textContent=`${i+1} ${action}`;if(i===index)item.className='current';list.append(item);});}
- beep(){if(!this.sound)return;try{this.audio ||=new(window.AudioContext||window.webkitAudioContext)();this.audio.resume();const oscillator=this.audio.createOscillator(),gain=this.audio.createGain();oscillator.connect(gain);gain.connect(this.audio.destination);oscillator.frequency.setValueAtTime(260,this.audio.currentTime);oscillator.frequency.exponentialRampToValueAtTime(150,this.audio.currentTime+.06);gain.gain.setValueAtTime(.035,this.audio.currentTime);gain.gain.exponentialRampToValueAtTime(.001,this.audio.currentTime+.08);oscillator.start();oscillator.stop(this.audio.currentTime+.09);}catch{}}
+export class UI {
+  constructor() {
+    this.done = new Set();
+    this.unlocked =
+      new URLSearchParams(location.search).get("unlock") === "all";
+    try {
+      this.done = new Set(
+        JSON.parse(localStorage.getItem("bloxorz.completed") || "[]"),
+      );
+      this.unlocked ||= localStorage.getItem("bloxorz.unlocked") === "yes";
+    } catch {}
+    this.sound = false;
+  }
+  bind(game) {
+    this.game = game;
+    document.querySelector("#stage").append(document.querySelector("#dpad"));
+    document.querySelector("#restart").onclick = () => game.restart();
+    document.querySelector("#undo").onclick = () => game.undo();
+    document.querySelector("#swap").onclick = () => game.input("SWAP");
+    document.querySelector("#new-game").onclick = () => {
+      if (!game.moves || confirm("Start again at level 1?")) game.load(1);
+    };
+    document.querySelector("#levels").onclick = () => this.showLevels();
+    document.querySelector("#help").onclick = () =>
+      document.querySelector("#legend-dialog").showModal();
+    document
+      .querySelectorAll("[data-close]")
+      .forEach(
+        (b) =>
+          (b.onclick = () => document.getElementById(b.dataset.close).close()),
+      );
+    document.querySelector("#unlock").onclick = () => {
+      this.unlocked = true;
+      try {
+        localStorage.setItem("bloxorz.unlocked", "yes");
+      } catch {}
+      this.showLevels();
+    };
+    document
+      .querySelectorAll("[data-solve]")
+      .forEach(
+        (b) =>
+          (b.onclick = () =>
+            game.solve(
+              b.dataset.solve,
+              document.querySelector("#heuristic").value,
+            )),
+      );
+    document
+      .querySelectorAll("[data-action]")
+      .forEach((b) => (b.onclick = () => game.input(b.dataset.action)));
+    document.querySelector("#sound").onclick = () => {
+      this.sound = !this.sound;
+      document.querySelector("#sound").textContent = this.sound
+        ? "Sound on"
+        : "Sound off";
+      document
+        .querySelector("#sound")
+        .setAttribute("aria-pressed", String(this.sound));
+      if (this.sound) this.beep();
+    };
+    document.querySelector("#begin").onclick = () => {
+      document.querySelector("#welcome").close();
+      try {
+        localStorage.setItem("bloxorz.seen", "yes");
+      } catch {}
+    };
+    document.querySelector("#play-pause").onclick = () => game.pauseReplay();
+    document.querySelector("#replay-step").onclick = () => game.stepReplay();
+    document.querySelector("#stop").onclick = () => game.stopReplay();
+    document.querySelector("#speed").onchange = (e) => {
+      game.queue.speed = Number(e.target.value);
+    };
+    const keymap = {
+      ArrowUp: "UP",
+      ArrowDown: "DOWN",
+      ArrowLeft: "LEFT",
+      ArrowRight: "RIGHT",
+      w: "UP",
+      s: "DOWN",
+      a: "LEFT",
+      d: "RIGHT",
+      " ": "SWAP",
+    };
+    window.addEventListener("keydown", (e) => {
+      if (
+        e.target instanceof Element &&
+        e.target.matches("input,select,textarea")
+      )
+        return;
+      if (document.querySelector("dialog[open]")) return;
+      const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+      if (keymap[key] || ["Backspace", "r", "u"].includes(key))
+        e.preventDefault();
+      if (e.repeat) return;
+      if (keymap[key]) game.input(keymap[key]);
+      else if (key === "r") game.restart();
+      else if (key === "u" || key === "Backspace") game.undo();
+      else if (key === "Escape") this.showLevels();
+    });
+    let touch = null;
+    const canvas = game.scene.renderer.domElement;
+    canvas.addEventListener("pointerdown", (e) => {
+      touch = [e.clientX, e.clientY];
+    });
+    canvas.addEventListener("pointerup", (e) => {
+      if (!touch) return;
+      const dx = e.clientX - touch[0],
+        dy = e.clientY - touch[1];
+      touch = null;
+      if (Math.max(Math.abs(dx), Math.abs(dy)) < 25) return;
+      game.input(
+        Math.abs(dx) > Math.abs(dy)
+          ? dx > 0
+            ? "RIGHT"
+            : "LEFT"
+          : dy > 0
+            ? "DOWN"
+            : "UP",
+      );
+    });
+  }
+  catalog(levels, boards) {
+    this.levels = levels;
+    this.boards = boards;
+  }
+  showLevels() {
+    const grid = document.querySelector("#level-grid");
+    grid.replaceChildren();
+    for (const level of this.levels) {
+      const unlocked =
+        this.unlocked ||
+        level.id === 1 ||
+        this.done.has(level.id - 1) ||
+        this.done.has(level.id);
+      const b = document.createElement("button");
+      b.className =
+        "level-card" + (this.done.has(level.id) ? " completed" : "");
+      b.disabled = !unlocked;
+      const board = this.boards.get(level.id);
+      const colors = {
+        floor: "#53677c",
+        start: "#e9b363",
+        goal: "#65dcd0",
+        fragile: "#c38549",
+        bridge: "#328f9e",
+        soft_switch: "#368c80",
+        heavy_switch: "#8e70b7",
+        split_switch: "#527fb4",
+      };
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute(
+        "viewBox",
+        `0 0 ${board.grid[0].length * 5} ${board.grid.length * 5}`,
+      );
+      svg.setAttribute("aria-hidden", "true");
+      board.grid.forEach((row, r) =>
+        [...row].forEach((ch, c) => {
+          const kind = board.legend[ch];
+          if (kind === "void") return;
+          const rect = document.createElementNS(svg.namespaceURI, "rect");
+          for (const [k, v] of Object.entries({
+            x: c * 5,
+            y: r * 5,
+            width: 4,
+            height: 4,
+            rx: 0.6,
+            fill: colors[kind],
+          }))
+            rect.setAttribute(k, v);
+          svg.append(rect);
+        }),
+      );
+      b.append(svg);
+      const title = document.createElement("b");
+      title.textContent = `${String(level.id).padStart(2, "0")} · ${level.name}`;
+      const detail = document.createElement("small");
+      detail.textContent = !unlocked
+        ? "Locked"
+        : this.done.has(level.id)
+          ? "✓ Completed"
+          : "●".repeat(level.difficulty) + "○".repeat(5 - level.difficulty);
+      b.append(title, detail);
+      b.onclick = () => {
+        document.querySelector("#level-dialog").close();
+        this.game.load(level.id);
+      };
+      grid.append(b);
+    }
+    const dialog = document.querySelector("#level-dialog");
+    if (!dialog.open) dialog.showModal();
+  }
+  showWelcome() {
+    let seen = false;
+    try {
+      seen = localStorage.getItem("bloxorz.seen") === "yes";
+    } catch {}
+    if (!seen && !this.game.debug)
+      document.querySelector("#welcome").showModal();
+  }
+  level(level) {
+    document.querySelector("#level-number").textContent =
+      `${String(level.id).padStart(2, "0")} / 15`;
+    document.querySelector("#level-name").textContent = level.name;
+    document.querySelector("#level-hint").textContent = level.meta.hint;
+    const difficulty = level.meta.difficulty;
+    document.querySelector("#difficulty").textContent =
+      "●".repeat(difficulty) + "○".repeat(5 - difficulty);
+    document.querySelector("#metrics").hidden = true;
+  }
+  update() {
+    const g = this.game;
+    document.querySelector("#moves").textContent = String(
+      g.moves || 0,
+    ).padStart(2, "0");
+    document.querySelector("#status").textContent =
+      g.mode === "IDLE" ? "YOUR MOVE" : g.mode.replaceAll("_", " ");
+    document
+      .querySelectorAll("[data-solve]")
+      .forEach(
+        (b) => (b.disabled = g.mode !== "IDLE" || g.status !== "PLAYING"),
+      );
+    document.querySelector("#undo").disabled =
+      !["IDLE", "ANIMATING", "WIN_FX", "LOSE_FX"].includes(g.mode) || !g.moves;
+    document.querySelector("#swap").disabled =
+      g.mode !== "IDLE" || !g.state?.split;
+    document.querySelector("#guidance").textContent =
+      g.mode === "REPLAY"
+        ? "Playback active — manual input is locked."
+        : g.state?.split
+          ? "The glowing marker identifies your active cube. Space to switch."
+          : "Tip: stand upright on the glowing goal to finish.";
+  }
+  complete(id) {
+    this.done.add(id);
+    try {
+      localStorage.setItem("bloxorz.completed", JSON.stringify([...this.done]));
+    } catch {}
+  }
+  toast(text) {
+    const el = document.querySelector("#toast");
+    el.textContent = text;
+    el.classList.add("visible");
+    clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => el.classList.remove("visible"), 4000);
+  }
+  metrics(result, algo, heuristic) {
+    const el = document.querySelector("#metrics");
+    el.hidden = false;
+    el.replaceChildren();
+    const heading = document.createElement("b");
+    heading.textContent = `${algo.toUpperCase()}${algo === "astar" ? " · " + heuristic : ""}`;
+    el.append(heading);
+    if (!result.found) {
+      const p = document.createElement("p");
+      p.className = "muted";
+      p.textContent =
+        result.reason === "not_implemented"
+          ? "Solver này chưa được cài đặt. Add your implementation in solvers/."
+          : result.reason === "timeout"
+            ? "Không giải được trong thời gian cho phép."
+            : result.reason || "No solution found.";
+      el.append(p);
+      return;
+    }
+    const grid = document.createElement("div");
+    grid.className = "metric-grid";
+    for (const [label, value] of [
+      ["Search time", result.search_time.toFixed(4) + " s"],
+      [
+        "Peak memory",
+        result.measurement_reason
+          ? "unavailable"
+          : result.peak_memory_kb.toFixed(1) + " KB",
+      ],
+      ["Expanded nodes", result.expanded_nodes],
+      ["Solution length", result.solution_length],
+      ["Cost", result.cost],
+    ]) {
+      const box = document.createElement("div"),
+        small = document.createElement("small"),
+        strong = document.createElement("strong");
+      small.textContent = label;
+      strong.textContent = value;
+      box.append(small, strong);
+      grid.append(box);
+    }
+    el.append(grid);
+  }
+  replay(path, index, paused) {
+    document.querySelector("#replay").hidden = false;
+    document.querySelector("#play-pause").textContent = paused
+      ? "Play"
+      : "Pause";
+    const progress = document.querySelector("#progress");
+    progress.max = Math.max(1, path.length);
+    progress.value = index;
+    const list = document.querySelector("#path");
+    list.replaceChildren();
+    path.forEach((action, i) => {
+      const item = document.createElement("span");
+      item.textContent = `${i + 1} ${action}`;
+      if (i === index) item.className = "current";
+      list.append(item);
+    });
+  }
+  beep() {
+    if (!this.sound) return;
+    try {
+      this.audio ||= new (window.AudioContext || window.webkitAudioContext)();
+      this.audio.resume();
+      const oscillator = this.audio.createOscillator(),
+        gain = this.audio.createGain();
+      oscillator.connect(gain);
+      gain.connect(this.audio.destination);
+      oscillator.frequency.setValueAtTime(260, this.audio.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(
+        150,
+        this.audio.currentTime + 0.06,
+      );
+      gain.gain.setValueAtTime(0.035, this.audio.currentTime);
+      gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        this.audio.currentTime + 0.08,
+      );
+      oscillator.start();
+      oscillator.stop(this.audio.currentTime + 0.09);
+    } catch {}
+  }
 }

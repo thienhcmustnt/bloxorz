@@ -1,7 +1,9 @@
 """Canonical, immutable state; active identifies a position after sorting."""
+
 from __future__ import annotations
 from dataclasses import dataclass
 from core.constants import Cell, Orientation
+
 
 @dataclass(frozen=True)
 class State:
@@ -18,7 +20,7 @@ class State:
             raise ValueError("Invalid split, active or bridges")
         cells = tuple(sorted(raw))
         if not self.split and len(cells) == 2:
-            if sum(abs(a-b) for a, b in zip(*cells)) != 1:
+            if sum(abs(a - b) for a, b in zip(*cells)) != 1:
                 raise ValueError("Unsplit cells must be adjacent")
         active = cells.index(raw[self.active]) if self.split else 0
         object.__setattr__(self, "cubes", cells)

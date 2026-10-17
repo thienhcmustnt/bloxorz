@@ -1,25 +1,196 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0d1522"><title>BLOXORZ — A study in motion</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='9' y='2' width='14' height='28' rx='3' fill='%23edb25f'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="/css/style.css">
-<script type="importmap">{"imports":{"three":"/vendor/three.module.js"}}</script>
-<script src="/vendor/gsap.min.js"></script></head>
-<body><header><a class="brand" href="/" aria-label="Bloxorz home"><span class="brand-icon">▰</span>BLOXORZ<span class="edition">SOLVER LAB / 01</span></a><div class="header-right"><span class="live-dot"></span> A STUDY IN MOTION <button id="help" title="Tile legend">?</button><button id="sound" aria-label="Toggle sound" aria-pressed="false">Sound off</button></div></header>
-<div class="layout"><aside><div class="eyebrow">THE CHALLENGE</div><h1>Small moves.<br>Precise thinking.</h1><p class="intro-copy">One block. A suspended world.<br>Find your way into the light.</p>
-<div class="level-summary"><span id="level-number">01 / 15</span><span id="difficulty">● ○ ○ ○ ○</span><h2 id="level-name">First Roll</h2><p id="level-hint">Loading the board…</p></div>
-<div class="side-actions"><button id="new-game">New Game <span>↗</span></button><button id="levels">Level Select <span>▦</span></button></div>
-<div class="eyebrow solver-label">SEARCH LAB</div><p class="muted">Choose an algorithm to trace a solution.</p><div class="solver-grid"><button data-solve="bfs">BFS <small>Breadth first</small></button><button data-solve="dfs">DFS <small>Depth first</small></button><button data-solve="ucs">UCS <small>Uniform cost</small></button><button data-solve="astar">A* <small>Informed search</small></button></div>
-<label class="select-label" for="heuristic">A* heuristic<select id="heuristic"><option value="center">center</option><option value="relaxed">relaxed</option></select></label>
-<div class="side-footer"><span>CSC14003</span><span>PROJECT 01 · PYTHON</span></div></aside>
-<main><section id="stage" aria-label="Three dimensional Bloxorz board"><div class="stage-top"><div><span class="eyebrow">PLAYGROUND</span><span id="status" role="status">LOADING</span></div><div class="move-stat"><strong id="moves">00</strong><span>MOVES</span></div></div>
-<div class="stage-bottom"><span><i class="amber-dot"></i> YOUR BLOCK</span><span class="goal-key">◇ REACH THE GOAL</span></div><div id="level-banner"></div><div id="context-error" hidden>WebGL context lost. <button onclick="location.reload()">Reload</button></div></section>
-<div class="toolbar"><div class="history-controls"><button id="restart">↻ <span>Restart</span><kbd>R</kbd></button><button id="undo">↶ <span>Undo</span><kbd>U</kbd></button></div><div class="keyboard-tip">ROLL <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>or arrow keys</span></div><button id="swap" disabled>⇄ Swap cube <kbd>SPACE</kbd></button></div>
-<div class="under-board"><span id="guidance">Tip: stand upright on the glowing goal to finish.</span><span>ISOMETRIC VIEW <span class="tiny-cross">✧</span></span></div>
-<div id="dpad"><button data-action="UP" aria-label="Move up">↑</button><button data-action="LEFT" aria-label="Move left">←</button><button data-action="DOWN" aria-label="Move down">↓</button><button data-action="RIGHT" aria-label="Move right">→</button></div>
-<section id="metrics" hidden aria-live="polite"></section><section id="replay" hidden><div class="replay-top"><b>SOLUTION PLAYBACK</b><button id="play-pause">Pause</button><button id="replay-step">Step</button><select id="speed" aria-label="Replay speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select><button id="stop">Stop</button></div><progress id="progress" max="1" value="0"></progress><div id="path"></div></section>
-</main></div><div id="toast" role="status" aria-live="polite"></div><pre id="debug" hidden></pre>
-<dialog id="level-dialog"><div class="dialog-header"><div><div class="eyebrow">FIFTEEN WORLDS TO EXPLORE</div><h2>Select a level</h2></div><button data-close="level-dialog" aria-label="Close">✕</button></div><div id="level-grid"></div><div class="dialog-footer"><span>Progress is saved on this device.</span><button id="unlock">Unlock all</button></div></dialog>
-<dialog id="legend-dialog"><div class="dialog-header"><h2>Read the board</h2><button data-close="legend-dialog">✕</button></div><div class="legend-list"><p><i class="tile-swatch floor"></i><b>Stone</b> Supports every orientation.</p><p><i class="tile-swatch fragile">╱</i><b>Fragile</b> Cross lying down. Single cubes are safe.</p><p><i class="tile-swatch goal">◇</i><b>Goal</b> Enter standing as a whole block.</p><p><i class="tile-swatch bridge">═</i><b>Bridge</b> Cross only when open.</p><p><i class="tile-swatch soft">○</i><b>Soft switch</b> Any footprint activates it.</p><p><i class="tile-swatch heavy">×</i><b>Heavy switch</b> Stand upright to activate.</p><p><i class="tile-swatch split">( )</i><b>Split switch</b> Stand upright to separate.</p></div><p class="muted">Space switches the active cube. Adjacent cubes reunite after a directional move. Each action, including Swap, counts as one move.</p></dialog>
-<dialog id="welcome"><div class="eyebrow">WELCOME TO BLOXORZ</div><h2>Every move changes your perspective.</h2><p>Roll with <b>arrow keys</b> or <b>W A S D</b>. Fit the entire block upright into the glowing goal.</p><div class="welcome-keys">↑<br>← ↓ →</div><p class="muted">R to restart · U to undo · Space to swap cubes</p><button id="begin" class="primary">Let's roll ↗</button></dialog>
-<script type="module" src="/main.js"></script></body></html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0d1522" />
+    <title>BLOXORZ — A study in motion</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='9' y='2' width='14' height='28' rx='3' fill='%23edb25f'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    <script type="importmap">
+      { "imports": { "three": "/vendor/three.module.js" } }
+    </script>
+    <script src="/vendor/gsap.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/" aria-label="Bloxorz home"
+        ><span class="brand-icon">▰</span>BLOXORZ<span class="edition"
+          >SOLVER LAB / 01</span
+        ></a
+      >
+      <div class="header-right">
+        <span class="live-dot"></span> A STUDY IN MOTION
+        <button id="help" title="Tile legend">?</button
+        ><button id="sound" aria-label="Toggle sound" aria-pressed="false">
+          Sound off
+        </button>
+      </div>
+    </header>
+    <div class="layout">
+      <aside>
+        <div class="eyebrow">THE CHALLENGE</div>
+        <h1>Small moves.<br />Precise thinking.</h1>
+        <p class="intro-copy">
+          One block. A suspended world.<br />Find your way into the light.
+        </p>
+        <div class="level-summary">
+          <span id="level-number">01 / 15</span
+          ><span id="difficulty">● ○ ○ ○ ○</span>
+          <h2 id="level-name">First Roll</h2>
+          <p id="level-hint">Loading the board…</p>
+        </div>
+        <div class="side-actions">
+          <button id="new-game">New Game <span>↗</span></button
+          ><button id="levels">Level Select <span>▦</span></button>
+        </div>
+        <div class="eyebrow solver-label">SEARCH LAB</div>
+        <p class="muted">Choose an algorithm to trace a solution.</p>
+        <div class="solver-grid">
+          <button data-solve="bfs">BFS <small>Breadth first</small></button
+          ><button data-solve="dfs">DFS <small>Depth first</small></button
+          ><button data-solve="ucs">UCS <small>Uniform cost</small></button
+          ><button data-solve="astar">A* <small>Informed search</small></button>
+        </div>
+        <label class="select-label" for="heuristic"
+          >A* heuristic<select id="heuristic">
+            <option value="center">center</option>
+            <option value="relaxed">relaxed</option>
+          </select></label
+        >
+        <div class="side-footer">
+          <span>CSC14003</span><span>PROJECT 01 · PYTHON</span>
+        </div>
+      </aside>
+      <main>
+        <section id="stage" aria-label="Three dimensional Bloxorz board">
+          <div class="stage-top">
+            <div>
+              <span class="eyebrow">PLAYGROUND</span
+              ><span id="status" role="status">LOADING</span>
+            </div>
+            <div class="move-stat">
+              <strong id="moves">00</strong><span>MOVES</span>
+            </div>
+          </div>
+          <div class="stage-bottom">
+            <span><i class="amber-dot"></i> YOUR BLOCK</span
+            ><span class="goal-key">◇ REACH THE GOAL</span>
+          </div>
+          <div id="level-banner"></div>
+          <div id="context-error" hidden>
+            WebGL context lost.
+            <button onclick="location.reload()">Reload</button>
+          </div>
+        </section>
+        <div class="toolbar">
+          <div class="history-controls">
+            <button id="restart">↻ <span>Restart</span><kbd>R</kbd></button
+            ><button id="undo">↶ <span>Undo</span><kbd>U</kbd></button>
+          </div>
+          <div class="keyboard-tip">
+            ROLL <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd
+            ><span>or arrow keys</span>
+          </div>
+          <button id="swap" disabled>⇄ Swap cube <kbd>SPACE</kbd></button>
+        </div>
+        <div class="under-board">
+          <span id="guidance"
+            >Tip: stand upright on the glowing goal to finish.</span
+          ><span>ISOMETRIC VIEW <span class="tiny-cross">✧</span></span>
+        </div>
+        <div id="dpad">
+          <button data-action="UP" aria-label="Move up">↑</button
+          ><button data-action="LEFT" aria-label="Move left">←</button
+          ><button data-action="DOWN" aria-label="Move down">↓</button
+          ><button data-action="RIGHT" aria-label="Move right">→</button>
+        </div>
+        <section id="metrics" hidden aria-live="polite"></section>
+        <section id="replay" hidden>
+          <div class="replay-top">
+            <b>SOLUTION PLAYBACK</b><button id="play-pause">Pause</button
+            ><button id="replay-step">Step</button
+            ><select id="speed" aria-label="Replay speed">
+              <option value="0.5">0.5×</option>
+              <option value="1" selected>1×</option>
+              <option value="2">2×</option>
+              <option value="4">4×</option></select
+            ><button id="stop">Stop</button>
+          </div>
+          <progress id="progress" max="1" value="0"></progress>
+          <div id="path"></div>
+        </section>
+      </main>
+    </div>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <pre id="debug" hidden></pre>
+    <dialog id="level-dialog">
+      <div class="dialog-header">
+        <div>
+          <div class="eyebrow">FIFTEEN WORLDS TO EXPLORE</div>
+          <h2>Select a level</h2>
+        </div>
+        <button data-close="level-dialog" aria-label="Close">✕</button>
+      </div>
+      <div id="level-grid"></div>
+      <div class="dialog-footer">
+        <span>Progress is saved on this device.</span
+        ><button id="unlock">Unlock all</button>
+      </div>
+    </dialog>
+    <dialog id="legend-dialog">
+      <div class="dialog-header">
+        <h2>Read the board</h2>
+        <button data-close="legend-dialog">✕</button>
+      </div>
+      <div class="legend-list">
+        <p>
+          <i class="tile-swatch floor"></i><b>Stone</b> Supports every
+          orientation.
+        </p>
+        <p>
+          <i class="tile-swatch fragile">╱</i><b>Fragile</b> Cross lying down.
+          Single cubes are safe.
+        </p>
+        <p>
+          <i class="tile-swatch goal">◇</i><b>Goal</b> Enter standing as a whole
+          block.
+        </p>
+        <p>
+          <i class="tile-swatch bridge">═</i><b>Bridge</b> Cross only when open.
+        </p>
+        <p>
+          <i class="tile-swatch soft">○</i><b>Soft switch</b> Any footprint
+          activates it.
+        </p>
+        <p>
+          <i class="tile-swatch heavy">×</i><b>Heavy switch</b> Stand upright to
+          activate.
+        </p>
+        <p>
+          <i class="tile-swatch split">( )</i><b>Split switch</b> Stand upright
+          to separate.
+        </p>
+      </div>
+      <p class="muted">
+        Space switches the active cube. Adjacent cubes reunite after a
+        directional move. Each action, including Swap, counts as one move.
+      </p>
+    </dialog>
+    <dialog id="welcome">
+      <div class="eyebrow">WELCOME TO BLOXORZ</div>
+      <h2>Every move changes your perspective.</h2>
+      <p>
+        Roll with <b>arrow keys</b> or <b>W A S D</b>. Fit the entire block
+        upright into the glowing goal.
+      </p>
+      <div class="welcome-keys">↑<br />← ↓ →</div>
+      <p class="muted">R to restart · U to undo · Space to swap cubes</p>
+      <button id="begin" class="primary">Let's roll ↗</button>
+    </dialog>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
