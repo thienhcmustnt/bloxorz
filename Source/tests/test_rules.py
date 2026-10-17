@@ -47,3 +47,7 @@ def test_immutable_and_successor_invariants(actions):
         result=step(level,state,action)
         assert asdict(state)==before
         if result.state: state=result.state
+
+def test_switch_cost_overrides_fragile_risk():
+    level=make_level(['SoFG'],switches=[{'cell':[0,1],'type':'soft','mode':'toggle','targets':[]}])
+    assert step(level,level.initial_state(),Action.RIGHT).cost==1

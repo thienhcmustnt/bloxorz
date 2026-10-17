@@ -2,16 +2,16 @@
   "id": 12,
   "name": "Grand Finale",
   "grid": [
-    "..............",
-    ".SoF#B#xB#Y...",
-    "..............",
-    "..............",
-    "..............",
-    ".####.#######.",
-    ".####B######o.",
-    ".####.#######.",
-    ".####.######G.",
-    ".............."
+    "....................",
+    ".SoF#B#xB#######Y...",
+    "....................",
+    "....................",
+    "....................",
+    ".####.#############.",
+    ".####B############o.",
+    ".####.#############.",
+    ".####.############G.",
+    "...................."
   ],
   "legend": {
     "#": "floor",
@@ -60,7 +60,7 @@
     {
       "cell": [
         6,
-        12
+        18
       ],
       "type": "soft",
       "mode": "permanent",
@@ -72,7 +72,7 @@
     {
       "cell": [
         1,
-        10
+        16
       ],
       "type": "split",
       "mode": "toggle",
@@ -84,7 +84,7 @@
         ],
         [
           5,
-          12
+          18
         ]
       ]
     },
@@ -116,16 +116,16 @@
     "difficulty": 4,
     "group": 4,
     "hint": "Study the footprint before each roll.",
-    "solution": "RRRRRRDRRRWDDWRRRRRRRRD",
-    "optimal_moves": 23,
+    "solution": "RRRRRRRRRRDRRRWDDWRRRRRRRRRRRRRRD",
+    "optimal_moves": 33,
     "verification": {
-      "expanded_nodes": 2769,
-      "reachable_discovered": 2831,
+      "expanded_nodes": 6181,
+      "reachable_discovered": 6297,
       "method": "exhaustive unit-cost verification, temporary tool not distributed",
       "mechanism_ablation": {
         "split": {
           "disabled_unsolvable": true,
-          "exhausted_states": 17
+          "exhausted_states": 21
         },
         "soft": {
           "disabled_unsolvable": true,

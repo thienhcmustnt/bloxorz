@@ -21,16 +21,23 @@ def _worker(connection: Connection, entry: str, data: dict[str, Any], start: Sta
         from solvers.heuristics import HEURISTICS
         problem = Problem(Level.from_dict(data),start,cost_model,
                           HEURISTICS[heuristic] if heuristic else None)
+        snapshot = vars(problem).copy()
+        level_snapshot = problem.level.to_dict()
         if measure == "memory":
             tracemalloc.start()
         began = time.perf_counter()
         result = solve(problem)
         elapsed = time.perf_counter()-began
+        peak = tracemalloc.get_traced_memory()[1]/1024 if measure == "memory" else 0.0
+        if tracemalloc.is_tracing():
+            tracemalloc.stop()
+        if vars(problem) != snapshot or problem.level.to_dict() != level_snapshot:
+            raise ValueError("Solver mutated Problem or Level")
         if not isinstance(result,SearchResult):
             raise TypeError("solve must return SearchResult")
         result.solution_length = len(result.path)
         result.search_time = elapsed if measure == "time" else 0.0
-        result.peak_memory_kb = tracemalloc.get_traced_memory()[1]/1024 if measure == "memory" else 0.0
+        result.peak_memory_kb = peak
         connection.send(result)
     except NotImplementedError:
         connection.send(SearchResult(reason="not_implemented"))

@@ -2,16 +2,16 @@
   "id": 10,
   "name": "Splitsville",
   "grid": [
-    "..........",
-    ".S##Y.....",
-    "..........",
-    "..........",
-    "..........",
-    ".########.",
-    ".########.",
-    ".########.",
-    ".#######G.",
-    ".........."
+    "................",
+    ".S###########Y..",
+    "................",
+    "................",
+    "................",
+    ".##############.",
+    ".##############.",
+    ".##############.",
+    ".#############G.",
+    "................"
   ],
   "legend": {
     "#": "floor",
@@ -29,7 +29,7 @@
     {
       "cell": [
         1,
-        4
+        13
       ],
       "type": "split",
       "mode": "toggle",
@@ -41,7 +41,7 @@
         ],
         [
           5,
-          8
+          14
         ]
       ]
     }
@@ -50,16 +50,16 @@
     "difficulty": 4,
     "group": 4,
     "hint": "Study the footprint before each roll.",
-    "solution": "RRRRRRRWLRDD",
-    "optimal_moves": 12,
+    "solution": "RRRRRRRRRRRRRRRRRRRWLRDD",
+    "optimal_moves": 24,
     "verification": {
-      "expanded_nodes": 746,
-      "reachable_discovered": 873,
+      "expanded_nodes": 2600,
+      "reachable_discovered": 2859,
       "method": "exhaustive unit-cost verification, temporary tool not distributed",
       "mechanism_ablation": {
         "split": {
           "disabled_unsolvable": true,
-          "exhausted_states": 3
+          "exhausted_states": 9
         }
       }
     },

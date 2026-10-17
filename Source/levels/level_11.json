@@ -2,16 +2,16 @@
   "id": 11,
   "name": "Reunion",
   "grid": [
-    "............",
-    ".S##Y.......",
-    "............",
-    "............",
-    "............",
-    ".####.#####.",
-    ".####B####o.",
-    ".####.#####.",
-    ".####.####G.",
-    "............"
+    "..................",
+    ".S###########Y....",
+    "..................",
+    "..................",
+    "..................",
+    ".####.###########.",
+    ".####B##########o.",
+    ".####.###########.",
+    ".####.##########G.",
+    ".................."
   ],
   "legend": {
     "#": "floor",
@@ -40,7 +40,7 @@
     {
       "cell": [
         6,
-        10
+        16
       ],
       "type": "soft",
       "mode": "permanent",
@@ -52,7 +52,7 @@
     {
       "cell": [
         1,
-        4
+        13
       ],
       "type": "split",
       "mode": "toggle",
@@ -64,7 +64,7 @@
         ],
         [
           5,
-          10
+          16
         ]
       ]
     }
@@ -73,20 +73,20 @@
     "difficulty": 4,
     "group": 4,
     "hint": "Move the second cube onto the ring, then reunite.",
-    "solution": "RRDRRRWDDWRRRRRRD",
-    "optimal_moves": 17,
+    "solution": "RRRRRRRRDRRRWDDWRRRRRRRRRRRRD",
+    "optimal_moves": 29,
     "verification": {
-      "expanded_nodes": 1875,
-      "reachable_discovered": 1919,
+      "expanded_nodes": 4905,
+      "reachable_discovered": 5003,
       "method": "exhaustive unit-cost verification, temporary tool not distributed",
       "mechanism_ablation": {
         "split": {
           "disabled_unsolvable": true,
-          "exhausted_states": 3
+          "exhausted_states": 9
         },
         "soft": {
           "disabled_unsolvable": true,
-          "exhausted_states": 642
+          "exhausted_states": 1416
         }
       }
     },

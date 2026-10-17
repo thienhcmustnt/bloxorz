@@ -1,7 +1,7 @@
 /** DOM presentation and input adapters; no movement or tile rules. */
 export class UI{
  constructor(){this.done=new Set();this.unlocked=new URLSearchParams(location.search).get('unlock')==='all';try{this.done=new Set(JSON.parse(localStorage.getItem('bloxorz.completed')||'[]'));this.unlocked ||=localStorage.getItem('bloxorz.unlocked')==='yes';}catch{}this.sound=false;}
- bind(game){this.game=game;
+ bind(game){this.game=game;document.querySelector('#stage').append(document.querySelector('#dpad'));
   document.querySelector('#restart').onclick=()=>game.restart();document.querySelector('#undo').onclick=()=>game.undo();document.querySelector('#swap').onclick=()=>game.input('SWAP');
   document.querySelector('#new-game').onclick=()=>{if(!game.moves||confirm('Start again at level 1?'))game.load(1);};
   document.querySelector('#levels').onclick=()=>this.showLevels();document.querySelector('#help').onclick=()=>document.querySelector('#legend-dialog').showModal();
@@ -13,7 +13,7 @@ export class UI{
   document.querySelector('#begin').onclick=()=>{document.querySelector('#welcome').close();try{localStorage.setItem('bloxorz.seen','yes');}catch{}};
   document.querySelector('#play-pause').onclick=()=>game.pauseReplay();document.querySelector('#replay-step').onclick=()=>game.stepReplay();document.querySelector('#stop').onclick=()=>game.stopReplay();document.querySelector('#speed').onchange=e=>{game.queue.speed=Number(e.target.value);};
   const keymap={ArrowUp:'UP',ArrowDown:'DOWN',ArrowLeft:'LEFT',ArrowRight:'RIGHT',w:'UP',s:'DOWN',a:'LEFT',d:'RIGHT',' ':'SWAP'};
-  window.addEventListener('keydown',e=>{if(e.target.matches('input,select,textarea'))return;if(document.querySelector('dialog[open]'))return;const key=e.key.length===1?e.key.toLowerCase():e.key;if(keymap[key]||['Backspace','r','u'].includes(key))e.preventDefault();if(e.repeat)return;if(keymap[key])game.input(keymap[key]);else if(key==='r')game.restart();else if(key==='u'||key==='Backspace')game.undo();else if(key==='Escape')this.showLevels();});
+  window.addEventListener('keydown',e=>{if(e.target instanceof Element && e.target.matches('input,select,textarea'))return;if(document.querySelector('dialog[open]'))return;const key=e.key.length===1?e.key.toLowerCase():e.key;if(keymap[key]||['Backspace','r','u'].includes(key))e.preventDefault();if(e.repeat)return;if(keymap[key])game.input(keymap[key]);else if(key==='r')game.restart();else if(key==='u'||key==='Backspace')game.undo();else if(key==='Escape')this.showLevels();});
   let touch=null;const canvas=game.scene.renderer.domElement;canvas.addEventListener('pointerdown',e=>{touch=[e.clientX,e.clientY];});canvas.addEventListener('pointerup',e=>{if(!touch)return;const dx=e.clientX-touch[0],dy=e.clientY-touch[1];touch=null;if(Math.max(Math.abs(dx),Math.abs(dy))<25)return;game.input(Math.abs(dx)>Math.abs(dy)?dx>0?'RIGHT':'LEFT':dy>0?'DOWN':'UP');});
  }
  catalog(levels,boards){this.levels=levels;this.boards=boards;}

@@ -4,14 +4,15 @@ export function poseFromState(state){if(!state)return[];if(state.orientation==='
  const cells=state.cubes;const x=cells.reduce((s,c)=>s+c[1],0)/cells.length,z=cells.reduce((s,c)=>s+c[0],0)/cells.length;
  return[{position:[x,state.orientation==='standing'?1:.5,z],rotation:state.orientation==='lying_h'?[0,0,Math.PI/2]:state.orientation==='lying_v'?[Math.PI/2,0,0]:[0,0,0],scale:[1,1,1]}];}
 export class BlockAnimator{
- constructor(scene,queue){this.scene=scene;this.queue=queue;this.meshes=[];this.group=new THREE.Group();scene.add(this.group);this.marker=null;}
- create(split){this.group.clear();this.meshes=[];
-   const geo=this.scene.own(new THREE.BoxGeometry(.92,split?.92:1.92,.92));
-   for(let i=0;i<(split?2:1);i++){const mat=this.scene.own(new THREE.MeshStandardMaterial({color:0xe8b267,roughness:.3,metalness:.48,transparent:true}));const mesh=new THREE.Mesh(geo,mat);mesh.castShadow=true;mesh.receiveShadow=true;this.group.add(mesh);this.meshes.push(mesh);
-     const edges=new THREE.LineSegments(this.scene.own(new THREE.EdgesGeometry(geo)),this.scene.own(new THREE.LineBasicMaterial({color:0xffe0a6,transparent:true,opacity:.58})));mesh.add(edges);
-     const stripe=new THREE.Mesh(this.scene.own(new THREE.BoxGeometry(.935,.045,.935)),this.scene.own(new THREE.MeshStandardMaterial({color:0x83562b,roughness:.5,metalness:.4})));mesh.add(stripe);
+ constructor(scene,queue){this.scene=scene;this.queue=queue;this.meshes=[];this.group=new THREE.Group();scene.add(this.group);this.marker=null;this.owned=new Set();}
+ own(resource){this.owned.add(resource);return this.scene.own(resource);}
+ create(split){this.group.clear();for(const resource of this.owned){this.scene.resources.delete(resource);resource.dispose?.();}this.owned.clear();this.meshes=[];
+   const geo=this.own(new THREE.BoxGeometry(.92,split?.92:1.92,.92));
+   for(let i=0;i<(split?2:1);i++){const mat=this.own(new THREE.MeshStandardMaterial({color:0xe8b267,roughness:.3,metalness:.48,transparent:true}));const mesh=new THREE.Mesh(geo,mat);mesh.castShadow=true;mesh.receiveShadow=true;this.group.add(mesh);this.meshes.push(mesh);
+     const edges=new THREE.LineSegments(this.own(new THREE.EdgesGeometry(geo)),this.own(new THREE.LineBasicMaterial({color:0xffe0a6,transparent:true,opacity:.58})));mesh.add(edges);
+     const stripe=new THREE.Mesh(this.own(new THREE.BoxGeometry(.935,.045,.935)),this.own(new THREE.MeshStandardMaterial({color:0x83562b,roughness:.5,metalness:.4})));mesh.add(stripe);
    }
-   if(split){this.marker=new THREE.Mesh(this.scene.own(new THREE.ConeGeometry(.12,.23,4)),this.scene.own(new THREE.MeshBasicMaterial({color:0xa5fff0})));this.marker.rotation.z=Math.PI;this.group.add(this.marker);}else this.marker=null;
+   if(split){this.marker=new THREE.Mesh(this.own(new THREE.ConeGeometry(.12,.23,4)),this.own(new THREE.MeshBasicMaterial({color:0xa5fff0})));this.marker.rotation.z=Math.PI;this.group.add(this.marker);}else this.marker=null;
    this.split=split;
  }
  snap(state){if(!state)return;const poses=poseFromState(state);if(this.split!==state.split||this.meshes.length!==poses.length)this.create(state.split);
