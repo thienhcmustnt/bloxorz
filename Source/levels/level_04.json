@@ -1,0 +1,42 @@
+{
+  "id": 4,
+  "name": "Islands",
+  "grid": [
+    "...######",
+    "#S###.#.#",
+    "##.###.##",
+    ".########",
+    "###.#####",
+    "######.#.",
+    "#######..",
+    "#.##.##G#",
+    "##.##.#.#"
+  ],
+  "legend": {
+    "#": "floor",
+    ".": "void",
+    "S": "start",
+    "G": "goal",
+    "F": "fragile",
+    "B": "bridge",
+    "o": "soft_switch",
+    "x": "heavy_switch",
+    "Y": "split_switch"
+  },
+  "bridges": [],
+  "switches": [],
+  "meta": {
+    "difficulty": 2,
+    "group": 1,
+    "hint": "Study the footprint before each roll.",
+    "solution": "RRDDRULDDRDR",
+    "optimal_moves": 12,
+    "verification": {
+      "expanded_nodes": 123,
+      "reachable_discovered": 131,
+      "method": "exhaustive unit-cost verification, temporary tool not distributed",
+      "mechanism_ablation": {}
+    },
+    "required_mechanics": []
+  }
+}

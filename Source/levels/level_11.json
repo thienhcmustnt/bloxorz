@@ -1,0 +1,101 @@
+{
+  "id": 11,
+  "name": "Reunion",
+  "grid": [
+    "............",
+    ".S##Y.......",
+    "............",
+    "............",
+    "............",
+    ".####.#####.",
+    ".####B####o.",
+    ".####.#####.",
+    ".####.####G.",
+    "............"
+  ],
+  "legend": {
+    "#": "floor",
+    ".": "void",
+    "S": "start",
+    "G": "goal",
+    "F": "fragile",
+    "B": "bridge",
+    "o": "soft_switch",
+    "x": "heavy_switch",
+    "Y": "split_switch"
+  },
+  "bridges": [
+    {
+      "id": 0,
+      "cells": [
+        [
+          6,
+          5
+        ]
+      ],
+      "open": false
+    }
+  ],
+  "switches": [
+    {
+      "cell": [
+        6,
+        10
+      ],
+      "type": "soft",
+      "mode": "permanent",
+      "targets": [
+        0
+      ],
+      "set": "open"
+    },
+    {
+      "cell": [
+        1,
+        4
+      ],
+      "type": "split",
+      "mode": "toggle",
+      "targets": [],
+      "cubes": [
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          10
+        ]
+      ]
+    }
+  ],
+  "meta": {
+    "difficulty": 4,
+    "group": 4,
+    "hint": "Move the second cube onto the ring, then reunite.",
+    "solution": "RRDRRRWDDWRRRRRRD",
+    "optimal_moves": 17,
+    "verification": {
+      "expanded_nodes": 1875,
+      "reachable_discovered": 1919,
+      "method": "exhaustive unit-cost verification, temporary tool not distributed",
+      "mechanism_ablation": {
+        "split": {
+          "disabled_unsolvable": true,
+          "exhausted_states": 3
+        },
+        "soft": {
+          "disabled_unsolvable": true,
+          "exhausted_states": 642
+        }
+      }
+    },
+    "required_mechanics": [
+      "split",
+      "merge",
+      "soft",
+      "bridge",
+      "swap"
+    ]
+  }
+}

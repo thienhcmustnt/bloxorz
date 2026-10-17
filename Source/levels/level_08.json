@@ -1,0 +1,74 @@
+{
+  "id": 8,
+  "name": "Heavy Duty",
+  "grid": [
+    "............",
+    ".S##xB#####.",
+    "..........#.",
+    "..........#.",
+    ".##########.",
+    ".#..........",
+    ".#..........",
+    ".###G.......",
+    "............"
+  ],
+  "legend": {
+    "#": "floor",
+    ".": "void",
+    "S": "start",
+    "G": "goal",
+    "F": "fragile",
+    "B": "bridge",
+    "o": "soft_switch",
+    "x": "heavy_switch",
+    "Y": "split_switch"
+  },
+  "bridges": [
+    {
+      "id": 0,
+      "cells": [
+        [
+          1,
+          5
+        ]
+      ],
+      "open": false
+    }
+  ],
+  "switches": [
+    {
+      "cell": [
+        1,
+        4
+      ],
+      "type": "heavy",
+      "mode": "permanent",
+      "targets": [
+        0
+      ],
+      "set": "open"
+    }
+  ],
+  "meta": {
+    "difficulty": 3,
+    "group": 3,
+    "hint": "Only a standing block presses X.",
+    "solution": "RRRRRRDDLLLLLLDDRR",
+    "optimal_moves": 18,
+    "verification": {
+      "expanded_nodes": 21,
+      "reachable_discovered": 21,
+      "method": "exhaustive unit-cost verification, temporary tool not distributed",
+      "mechanism_ablation": {
+        "heavy": {
+          "disabled_unsolvable": true,
+          "exhausted_states": 3
+        }
+      }
+    },
+    "required_mechanics": [
+      "heavy",
+      "bridge"
+    ]
+  }
+}

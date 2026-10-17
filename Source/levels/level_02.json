@@ -1,0 +1,40 @@
+{
+  "id": 2,
+  "name": "Narrow Path",
+  "grid": [
+    "..#####",
+    ".S###.#",
+    "#####.#",
+    ".###.##",
+    "###.###",
+    "..###G.",
+    "..##..#"
+  ],
+  "legend": {
+    "#": "floor",
+    ".": "void",
+    "S": "start",
+    "G": "goal",
+    "F": "fragile",
+    "B": "bridge",
+    "o": "soft_switch",
+    "x": "heavy_switch",
+    "Y": "split_switch"
+  },
+  "bridges": [],
+  "switches": [],
+  "meta": {
+    "difficulty": 1,
+    "group": 1,
+    "hint": "Study the footprint before each roll.",
+    "solution": "RDLDRDRR",
+    "optimal_moves": 8,
+    "verification": {
+      "expanded_nodes": 52,
+      "reachable_discovered": 55,
+      "method": "exhaustive unit-cost verification, temporary tool not distributed",
+      "mechanism_ablation": {}
+    },
+    "required_mechanics": []
+  }
+}

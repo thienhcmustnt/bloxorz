@@ -1,0 +1,154 @@
+{
+  "id": 12,
+  "name": "Grand Finale",
+  "grid": [
+    "..............",
+    ".SoF#B#xB#Y...",
+    "..............",
+    "..............",
+    "..............",
+    ".####.#######.",
+    ".####B######o.",
+    ".####.#######.",
+    ".####.######G.",
+    ".............."
+  ],
+  "legend": {
+    "#": "floor",
+    ".": "void",
+    "S": "start",
+    "G": "goal",
+    "F": "fragile",
+    "B": "bridge",
+    "o": "soft_switch",
+    "x": "heavy_switch",
+    "Y": "split_switch"
+  },
+  "bridges": [
+    {
+      "id": 0,
+      "cells": [
+        [
+          6,
+          5
+        ]
+      ],
+      "open": false
+    },
+    {
+      "id": 1,
+      "cells": [
+        [
+          1,
+          5
+        ]
+      ],
+      "open": false
+    },
+    {
+      "id": 2,
+      "cells": [
+        [
+          1,
+          8
+        ]
+      ],
+      "open": false
+    }
+  ],
+  "switches": [
+    {
+      "cell": [
+        6,
+        12
+      ],
+      "type": "soft",
+      "mode": "permanent",
+      "targets": [
+        0
+      ],
+      "set": "open"
+    },
+    {
+      "cell": [
+        1,
+        10
+      ],
+      "type": "split",
+      "mode": "toggle",
+      "targets": [],
+      "cubes": [
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          12
+        ]
+      ]
+    },
+    {
+      "cell": [
+        1,
+        2
+      ],
+      "type": "soft",
+      "mode": "toggle",
+      "targets": [
+        1
+      ]
+    },
+    {
+      "cell": [
+        1,
+        7
+      ],
+      "type": "heavy",
+      "mode": "permanent",
+      "targets": [
+        2
+      ],
+      "set": "open"
+    }
+  ],
+  "meta": {
+    "difficulty": 4,
+    "group": 4,
+    "hint": "Study the footprint before each roll.",
+    "solution": "RRRRRRDRRRWDDWRRRRRRRRD",
+    "optimal_moves": 23,
+    "verification": {
+      "expanded_nodes": 2769,
+      "reachable_discovered": 2831,
+      "method": "exhaustive unit-cost verification, temporary tool not distributed",
+      "mechanism_ablation": {
+        "split": {
+          "disabled_unsolvable": true,
+          "exhausted_states": 17
+        },
+        "soft": {
+          "disabled_unsolvable": true,
+          "exhausted_states": 3
+        },
+        "heavy": {
+          "disabled_unsolvable": true,
+          "exhausted_states": 8
+        },
+        "fragile_crossing": {
+          "disabled_unsolvable": true,
+          "exhausted_states": 1
+        }
+      }
+    },
+    "required_mechanics": [
+      "split",
+      "merge",
+      "soft",
+      "bridge",
+      "swap",
+      "heavy",
+      "fragile_crossing"
+    ]
+  }
+}

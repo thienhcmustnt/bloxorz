@@ -1,0 +1,179 @@
+{
+  "id": 14,
+  "name": "Stress B",
+  "grid": [
+    "####.##.##.#######",
+    "#S#.Y#############",
+    "############.#B###",
+    "##B###.#..oo.#####",
+    "########B#.#####..",
+    "###o#.#.####.B##.#",
+    "##.#####.#########",
+    "##..###o###.#..###",
+    "##################",
+    "######..#..#######",
+    "#.#.##############",
+    "#####.######.###.#",
+    "#####B####..#.####",
+    ".##.###...######.#",
+    "###.##############",
+    ".#######.#####.o##",
+    "#.##############G.",
+    "#######.#.########"
+  ],
+  "legend": {
+    "#": "floor",
+    ".": "void",
+    "S": "start",
+    "G": "goal",
+    "F": "fragile",
+    "B": "bridge",
+    "o": "soft_switch",
+    "x": "heavy_switch",
+    "Y": "split_switch"
+  },
+  "bridges": [
+    {
+      "id": 0,
+      "cells": [
+        [
+          2,
+          14
+        ]
+      ],
+      "open": false
+    },
+    {
+      "id": 1,
+      "cells": [
+        [
+          5,
+          13
+        ]
+      ],
+      "open": false
+    },
+    {
+      "id": 2,
+      "cells": [
+        [
+          4,
+          8
+        ]
+      ],
+      "open": false
+    },
+    {
+      "id": 3,
+      "cells": [
+        [
+          12,
+          5
+        ]
+      ],
+      "open": false
+    },
+    {
+      "id": 4,
+      "cells": [
+        [
+          3,
+          2
+        ]
+      ],
+      "open": false
+    }
+  ],
+  "switches": [
+    {
+      "cell": [
+        5,
+        3
+      ],
+      "type": "soft",
+      "mode": "toggle",
+      "targets": [
+        0
+      ]
+    },
+    {
+      "cell": [
+        3,
+        11
+      ],
+      "type": "soft",
+      "mode": "toggle",
+      "targets": [
+        1
+      ]
+    },
+    {
+      "cell": [
+        3,
+        10
+      ],
+      "type": "soft",
+      "mode": "toggle",
+      "targets": [
+        2
+      ]
+    },
+    {
+      "cell": [
+        15,
+        15
+      ],
+      "type": "soft",
+      "mode": "toggle",
+      "targets": [
+        3
+      ]
+    },
+    {
+      "cell": [
+        7,
+        7
+      ],
+      "type": "soft",
+      "mode": "toggle",
+      "targets": [
+        4
+      ]
+    },
+    {
+      "cell": [
+        1,
+        4
+      ],
+      "type": "split",
+      "mode": "toggle",
+      "targets": [],
+      "cubes": [
+        [
+          2,
+          2
+        ],
+        [
+          15,
+          2
+        ]
+      ]
+    }
+  ],
+  "meta": {
+    "difficulty": 5,
+    "group": 4,
+    "hint": "Study the footprint before each roll.",
+    "solution": "DDRRDDDDDDDDRRRRRRRR",
+    "optimal_moves": 20,
+    "verification": {
+      "expanded_nodes": 19379,
+      "reachable_discovered": 25060,
+      "method": "exhaustive unit-cost verification, temporary tool not distributed",
+      "mechanism_ablation": {}
+    },
+    "required_mechanics": [
+      "stress"
+    ]
+  }
+}

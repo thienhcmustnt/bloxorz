@@ -1,0 +1,136 @@
+{
+  "id": 13,
+  "name": "Stress A",
+  "grid": [
+    "####.#######.##",
+    ".S###.#.#.####.",
+    "#.##.##########",
+    "#.####o####o###",
+    "######o###.####",
+    "#############.#",
+    "##.####.#######",
+    "###B##.########",
+    "###############",
+    "###.#B###o#####",
+    "###############",
+    "##.#####.##B###",
+    "#######.##B###.",
+    ".######.###.#G#",
+    "###.###########"
+  ],
+  "legend": {
+    "#": "floor",
+    ".": "void",
+    "S": "start",
+    "G": "goal",
+    "F": "fragile",
+    "B": "bridge",
+    "o": "soft_switch",
+    "x": "heavy_switch",
+    "Y": "split_switch"
+  },
+  "bridges": [
+    {
+      "id": 0,
+      "cells": [
+        [
+          9,
+          5
+        ]
+      ],
+      "open": false
+    },
+    {
+      "id": 1,
+      "cells": [
+        [
+          7,
+          3
+        ]
+      ],
+      "open": false
+    },
+    {
+      "id": 2,
+      "cells": [
+        [
+          12,
+          10
+        ]
+      ],
+      "open": false
+    },
+    {
+      "id": 3,
+      "cells": [
+        [
+          11,
+          11
+        ]
+      ],
+      "open": false
+    }
+  ],
+  "switches": [
+    {
+      "cell": [
+        4,
+        6
+      ],
+      "type": "soft",
+      "mode": "toggle",
+      "targets": [
+        0
+      ]
+    },
+    {
+      "cell": [
+        9,
+        9
+      ],
+      "type": "soft",
+      "mode": "toggle",
+      "targets": [
+        1
+      ]
+    },
+    {
+      "cell": [
+        3,
+        6
+      ],
+      "type": "soft",
+      "mode": "toggle",
+      "targets": [
+        2
+      ]
+    },
+    {
+      "cell": [
+        3,
+        11
+      ],
+      "type": "soft",
+      "mode": "toggle",
+      "targets": [
+        3
+      ]
+    }
+  ],
+  "meta": {
+    "difficulty": 5,
+    "group": 4,
+    "hint": "Study the footprint before each roll.",
+    "solution": "RDDDRDDDDRRRRRRDD",
+    "optimal_moves": 17,
+    "verification": {
+      "expanded_nodes": 3086,
+      "reachable_discovered": 3692,
+      "method": "exhaustive unit-cost verification, temporary tool not distributed",
+      "mechanism_ablation": {}
+    },
+    "required_mechanics": [
+      "stress"
+    ]
+  }
+}

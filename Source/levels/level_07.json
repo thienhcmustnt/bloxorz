@@ -1,0 +1,70 @@
+{
+  "id": 7,
+  "name": "First Switch",
+  "grid": [
+    "............",
+    ".So##B#####.",
+    "..........#.",
+    "..........#.",
+    ".G#########.",
+    "............"
+  ],
+  "legend": {
+    "#": "floor",
+    ".": "void",
+    "S": "start",
+    "G": "goal",
+    "F": "fragile",
+    "B": "bridge",
+    "o": "soft_switch",
+    "x": "heavy_switch",
+    "Y": "split_switch"
+  },
+  "bridges": [
+    {
+      "id": 0,
+      "cells": [
+        [
+          1,
+          5
+        ]
+      ],
+      "open": false
+    }
+  ],
+  "switches": [
+    {
+      "cell": [
+        1,
+        2
+      ],
+      "type": "soft",
+      "mode": "toggle",
+      "targets": [
+        0
+      ]
+    }
+  ],
+  "meta": {
+    "difficulty": 3,
+    "group": 3,
+    "hint": "Touch the ring to open the crossing.",
+    "solution": "RRRRRRDDLLLLLL",
+    "optimal_moves": 14,
+    "verification": {
+      "expanded_nodes": 18,
+      "reachable_discovered": 18,
+      "method": "exhaustive unit-cost verification, temporary tool not distributed",
+      "mechanism_ablation": {
+        "soft": {
+          "disabled_unsolvable": true,
+          "exhausted_states": 3
+        }
+      }
+    },
+    "required_mechanics": [
+      "soft",
+      "bridge"
+    ]
+  }
+}

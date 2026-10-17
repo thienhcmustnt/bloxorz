@@ -1,0 +1,71 @@
+{
+  "id": 10,
+  "name": "Splitsville",
+  "grid": [
+    "..........",
+    ".S##Y.....",
+    "..........",
+    "..........",
+    "..........",
+    ".########.",
+    ".########.",
+    ".########.",
+    ".#######G.",
+    ".........."
+  ],
+  "legend": {
+    "#": "floor",
+    ".": "void",
+    "S": "start",
+    "G": "goal",
+    "F": "fragile",
+    "B": "bridge",
+    "o": "soft_switch",
+    "x": "heavy_switch",
+    "Y": "split_switch"
+  },
+  "bridges": [],
+  "switches": [
+    {
+      "cell": [
+        1,
+        4
+      ],
+      "type": "split",
+      "mode": "toggle",
+      "targets": [],
+      "cubes": [
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          8
+        ]
+      ]
+    }
+  ],
+  "meta": {
+    "difficulty": 4,
+    "group": 4,
+    "hint": "Study the footprint before each roll.",
+    "solution": "RRRRRRRWLRDD",
+    "optimal_moves": 12,
+    "verification": {
+      "expanded_nodes": 746,
+      "reachable_discovered": 873,
+      "method": "exhaustive unit-cost verification, temporary tool not distributed",
+      "mechanism_ablation": {
+        "split": {
+          "disabled_unsolvable": true,
+          "exhausted_states": 3
+        }
+      }
+    },
+    "required_mechanics": [
+      "split",
+      "merge"
+    ]
+  }
+}

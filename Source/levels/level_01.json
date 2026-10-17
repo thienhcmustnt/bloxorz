@@ -1,0 +1,40 @@
+{
+  "id": 1,
+  "name": "First Roll",
+  "grid": [
+    "#.##.##",
+    "#S.#.##",
+    ".###.##",
+    ".######",
+    ".#####.",
+    "#..##G#",
+    "#######"
+  ],
+  "legend": {
+    "#": "floor",
+    ".": "void",
+    "S": "start",
+    "G": "goal",
+    "F": "fragile",
+    "B": "bridge",
+    "o": "soft_switch",
+    "x": "heavy_switch",
+    "Y": "split_switch"
+  },
+  "bridges": [],
+  "switches": [],
+  "meta": {
+    "difficulty": 1,
+    "group": 1,
+    "hint": "Study the footprint before each roll.",
+    "solution": "DRDRDR",
+    "optimal_moves": 6,
+    "verification": {
+      "expanded_nodes": 31,
+      "reachable_discovered": 44,
+      "method": "exhaustive unit-cost verification, temporary tool not distributed",
+      "mechanism_ablation": {}
+    },
+    "required_mechanics": []
+  }
+}

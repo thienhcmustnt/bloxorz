@@ -1,0 +1,46 @@
+{
+  "id": 5,
+  "name": "Thin Ice",
+  "grid": [
+    "............",
+    ".SFF#######.",
+    "..........#.",
+    "..........#.",
+    "....G######.",
+    "............"
+  ],
+  "legend": {
+    "#": "floor",
+    ".": "void",
+    "S": "start",
+    "G": "goal",
+    "F": "fragile",
+    "B": "bridge",
+    "o": "soft_switch",
+    "x": "heavy_switch",
+    "Y": "split_switch"
+  },
+  "bridges": [],
+  "switches": [],
+  "meta": {
+    "difficulty": 2,
+    "group": 2,
+    "hint": "Study the footprint before each roll.",
+    "solution": "RRRRRRDDLLLL",
+    "optimal_moves": 12,
+    "verification": {
+      "expanded_nodes": 13,
+      "reachable_discovered": 13,
+      "method": "exhaustive unit-cost verification, temporary tool not distributed",
+      "mechanism_ablation": {
+        "fragile_crossing": {
+          "disabled_unsolvable": true,
+          "exhausted_states": 1
+        }
+      }
+    },
+    "required_mechanics": [
+      "fragile_crossing"
+    ]
+  }
+}
